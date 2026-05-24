@@ -1,0 +1,66 @@
+{% extends 'factory/base.html' %}
+{% block title %}Изделия{% endblock %}
+{% block content %}
+<h1>Каталог изделий</h1>
+<form method="get" style="margin-bottom:15px;">
+    <input type="text" name="q" value="{{ q }}" placeholder="Поиск...">
+    <select name="type">
+        <option value="">Все виды</option>
+        {% for t in types %}
+        <option value="{{ t.pk }}" {% if ftype == t.pk|stringformat:"s" %}selected{% endif %}>{{ t.name }}</option>
+        {% endfor %}
+    </select>
+    <select name="sort">
+        <option value="name" {% if sort == 'name' %}selected{% endif %}>По названию А-Я</option>
+        <option value="-name" {% if sort == '-name' %}selected{% endif %}>По названию Я-А</option>
+        <option value="price" {% if sort == 'price' %}selected{% endif %}>По цене ↑</option>
+        <option value="-price" {% if sort == '-price' %}selected{% endif %}>По цене ↓</option>
+    </select>
+    <button type="submit" class="btn">Найти</button>
+    {% if can_manage %}<a href="/furniture/create/" class="btn">+ Добавить</a>{% endif %}
+</form>
+<table id="furniture-table">
+    <tr>
+        <th>Артикул</th>
+        <th><button type="button" onclick="sortFurniture(1)">Название ↕</button></th>
+        <th>Вид</th>
+        <th><button type="button" onclick="sortFurniture(3)">Цена ↕</button></th>
+        <th>Статус</th>
+        <th>Действия</th>
+    </tr>
+    {% for item in items %}
+    <tr>
+        <td>{{ item.code }}</td>
+        <td><a href="/furniture/{{ item.pk }}/">{{ item.name }}</a></td>
+        <td>{{ item.furniture_type }}</td>
+        <td data-sort="{{ item.price }}">{{ item.price }} BYN</td>
+        <td>{% if item.is_active %}В производстве{% else %}Снято{% endif %}</td>
+        <td>
+            {% if can_manage %}
+            <a href="/furniture/{{ item.pk }}/edit/">Изменить</a>
+            <a href="/furniture/{{ item.pk }}/delete/">Удалить</a>
+            {% endif %}
+            {% if nav.show_cart %}
+            <a href="/cart/add/{{ item.pk }}/">В корзину</a>
+            {% endif %}
+        </td>
+    </tr>
+    {% empty %}<tr><td colspan="6">Ничего не найдено</td></tr>
+    {% endfor %}
+</table>
+<script>
+function sortFurniture(col) {
+    const table = document.getElementById('furniture-table');
+    const rows = Array.from(table.querySelectorAll('tr')).slice(1);
+    const asc = table.dataset.asc !== String(col);
+    table.dataset.asc = asc ? String(col) : '';
+    rows.sort((a,b) => {
+        let av = a.cells[col].dataset.sort || a.cells[col].innerText;
+        let bv = b.cells[col].dataset.sort || b.cells[col].innerText;
+        if (col === 3) { av = parseFloat(av); bv = parseFloat(bv); return asc ? av-bv : bv-av; }
+        return asc ? av.localeCompare(bv,'ru') : bv.localeCompare(av,'ru');
+    });
+    rows.forEach(r => table.appendChild(r));
+}
+</script>
+{% endblock %}

@@ -1,0 +1,11 @@
+{% extends 'factory/base.html' %}
+{% block title %}Удалить заказ{% endblock %}
+{% block content %}
+<h1>Удалить заказ #{{ order.pk }}?</h1>
+<p>Дата: {{ order.order_date|date:"d/m/Y" }}, статус: {{ order.get_status_display }}</p>
+<form method="post">
+    {% csrf_token %}
+    <button type="submit" class="btn">Удалить</button>
+    <a href="/orders/{{ order.pk }}/">Отмена</a>
+</form>
+{% endblock %}

@@ -1,0 +1,42 @@
+{% extends 'factory/base.html' %}
+{% block title %}Словарь терминов и понятий{% endblock %}
+{% block content %}
+<h1>Словарь терминов и понятий</h1>
+<p>Часто задаваемые вопросы и ответы с датой добавления на сайт (по заданию лабораторной).</p>
+
+<form method="get" style="margin-bottom:15px;">
+    <input type="text" name="q" value="{{ q }}" placeholder="Поиск по вопросу или ответу...">
+    <select name="sort">
+        <option value="-created_at" {% if sort == '-created_at' %}selected{% endif %}>Сначала новые</option>
+        <option value="created_at" {% if sort == 'created_at' %}selected{% endif %}>Сначала старые</option>
+        <option value="question_text" {% if sort == 'question_text' %}selected{% endif %}>По вопросу А-Я</option>
+    </select>
+    <button type="submit" class="btn">Найти</button>
+    {% if can_publish %}<a href="/glossary/create/" class="btn">+ Опубликовать Q&amp;A</a>{% endif %}
+</form>
+
+<table>
+    <tr><th>Дата</th><th>Вопрос</th><th>Ответ</th></tr>
+    {% for entry in entries %}
+    <tr>
+        <td>{{ entry.created_at|date:"d/m/Y" }}</td>
+        <td><b>{{ entry.question_text }}</b></td>
+        <td>{{ entry.answer_text }}</td>
+    </tr>
+    {% empty %}
+    <tr><td colspan="3">Пока нет опубликованных записей. Добавьте их в админке или задайте вопрос ниже.</td></tr>
+    {% endfor %}
+</table>
+
+<h2>Задать вопрос</h2>
+<p>Ответ появится в таблице после проверки менеджером.</p>
+<form method="post">
+    {% csrf_token %}
+    <input type="hidden" name="form_type" value="ask">
+    {{ ask_form.as_p }}
+    <button type="submit" class="btn">Отправить вопрос</button>
+</form>
+{% if not user.is_authenticated %}
+<p><small>Можно задать вопрос без регистрации. Для заказов и отзывов — <a href="/register/">регистрация</a>.</small></p>
+{% endif %}
+{% endblock %}

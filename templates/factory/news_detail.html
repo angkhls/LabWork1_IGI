@@ -1,0 +1,9 @@
+{% extends 'factory/base.html' %}
+{% block title %}{{ article.title }}{% endblock %}
+{% block content %}
+<h1>{{ article.title }}</h1>
+<small>{{ article.published_at|date:"d/m/Y" }}</small>
+{% if article.image %}<br><img src="{{ article.image.url }}" style="max-width:500px;">{% endif %}
+<p>{{ article.content }}</p>
+<a href="/news/" class="btn">← Назад</a>
+{% endblock %}

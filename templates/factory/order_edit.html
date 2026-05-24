@@ -1,0 +1,47 @@
+{% extends 'factory/base.html' %}
+{% block title %}Редактировать заказ #{{ order.pk }}{% endblock %}
+{% block content %}
+<h1>Редактировать заказ #{{ order.pk }}</h1>
+
+<form method="post">
+    {% csrf_token %}
+    <input type="hidden" name="action" value="save">
+    {{ edit_form.as_p }}
+
+    <h3>Позиции заказа</h3>
+    <table>
+        <tr><th>Изделие</th><th>Цена</th><th>Кол-во</th><th>Сумма</th></tr>
+        {% for item in items %}
+        <tr>
+            <td>{{ item.furniture.name }}</td>
+            <td>{{ item.price_per_unit }} BYN</td>
+            <td><input type="number" name="quantity_{{ item.pk }}" value="{{ item.quantity }}" min="1" required></td>
+            <td>{{ item.subtotal }} BYN</td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="4">Позиций нет — добавьте товар ниже</td></tr>
+        {% endfor %}
+    </table>
+    <p><b>Итого:</b> {{ order.total_price }} BYN</p>
+    <button type="submit" class="btn">Сохранить заказ</button>
+</form>
+
+<h3>Добавить товар в заказ</h3>
+<form method="post">
+    {% csrf_token %}
+    <input type="hidden" name="action" value="add_item">
+    {{ add_form.as_p }}
+    <button type="submit" class="btn">Добавить</button>
+</form>
+
+{% for item in items %}
+<form method="post" style="display:inline;">
+    {% csrf_token %}
+    <input type="hidden" name="action" value="remove_item">
+    <input type="hidden" name="item_id" value="{{ item.pk }}">
+    <button type="submit">Удалить «{{ item.furniture.name }}»</button>
+</form>
+{% endfor %}
+
+<p><a href="/orders/{{ order.pk }}/">Назад</a></p>
+{% endblock %}

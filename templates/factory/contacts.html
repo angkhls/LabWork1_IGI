@@ -1,0 +1,27 @@
+{% extends 'factory/base.html' %}
+{% block title %}Контакты{% endblock %}
+{% block content %}
+
+<h1>Контакты</h1>
+
+{% for emp in employees %}
+<div style="border:1px solid #ddd; padding:15px; margin:10px 0; border-radius:6px; overflow:hidden;">
+    {% if emp.photo %}
+    <img src="{{ emp.photo.url }}" style="max-width:120px; float:left; margin-right:15px;">
+    {% endif %}
+    <h2>{{ emp.full_name }}</h2>
+    <p><b>Должность:</b> {{ emp.position }}</p>
+    <p><b>Телефон:</b> {{ emp.phone }}</p>
+    {% if emp.email %}
+    <p><b>Email:</b> {{ emp.email }}</p>
+    {% endif %}
+    {% if emp.work_description %}
+    <p>{{ emp.work_description }}</p>
+    {% endif %}
+    <div style="clear:both;"></div>
+</div>
+{% empty %}
+<p>Контакты не добавлены.</p>
+{% endfor %}
+
+{% endblock %}

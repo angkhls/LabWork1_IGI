@@ -1,0 +1,13 @@
+{% extends 'factory/base.html' %}
+{% block title %}О компании{% endblock %}
+{% block content %}
+<h1>О компании</h1>
+{% for item in info %}
+<div style="margin:15px 0;">
+    {% if item.year %}<h3>{{ item.year }}</h3>{% endif %}
+    <h2>{{ item.title }}</h2>
+    <p>{{ item.content }}</p>
+</div>
+{% empty %}<p>Информация не добавлена.</p>
+{% endfor %}
+{% endblock %}

@@ -1,0 +1,17 @@
+{% extends 'factory/base.html' %}
+{% block title %}Главная{% endblock %}
+{% block content %}
+<h1>Добро пожаловать на сайт мебельной фабрики</h1>
+{% if article %}
+<div style="border:1px solid #ddd; padding:20px; margin:20px 0; border-radius: 5px;">
+    <h2>Последняя новость: {{ article.title }}</h2>
+    <p>{{ article.summary }}</p>
+    
+    <div style="margin-top: 15px;"> <small style="color: #666; display: block; margin-bottom: 10px;">{{ article.published_at|date:"d/m/Y" }}</small>
+        <a href="/news/{{ article.pk }}/" style="display: inline-block; padding: 10px 20px; background-color: #34495e; color: white; text-decoration: none; border-radius: 5px; font-weight: bold;">Читать далее</a>
+    </div>
+</div>
+{% else %}
+<p>Новостей пока нет.</p>
+{% endif %}
+{% endblock %}

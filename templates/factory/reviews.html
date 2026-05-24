@@ -1,0 +1,30 @@
+{% extends 'factory/base.html' %}
+{% block title %}Отзывы{% endblock %}
+{% block content %}
+<h1>Отзывы</h1>
+{% if user.is_authenticated %}
+<h2>Оставить отзыв</h2>
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn">Отправить</button>
+</form>
+{% else %}
+<p>Чтобы оставить отзыв, <a href="/login/">войдите</a> или <a href="/register/">зарегистрируйтесь</a>.</p>
+{% endif %}
+<hr>
+<table>
+<tr><th>Пользователь</th><th>Товар</th><th>Оценка</th><th>Текст</th><th>Дата</th></tr>
+{% for r in reviews %}
+<tr>
+    <td>{{ r.user.username }}</td>
+    <td>{{ r.furniture.name }}</td>
+    <td>{{ r.rating }}★</td>
+    <td>{{ r.text }}</td>
+    <td>{{ r.created_at|date:"d/m/Y" }}</td>
+</tr>
+{% empty %}
+<tr><td colspan="5">Отзывов нет</td></tr>
+{% endfor %}
+</table>
+{% endblock %}

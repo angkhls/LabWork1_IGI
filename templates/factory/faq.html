@@ -1,0 +1,40 @@
+{% extends 'factory/base.html' %}
+
+{% block content %}
+<div class="faq-container" style="max-width: 800px; margin: 0 auto; padding: 20px;">
+    <h1 style="text-align: center; margin-bottom: 30px;">Вопросы и ответы (FAQ)</h1>
+
+    <div class="ask-question-box" style="background: #f8f9fa; border: 1px solid #dee2e6; padding: 20px; border-radius: 8px; margin-bottom: 40px;">
+        <h3 style="margin-top: 0; margin-bottom: 15px;">Задать свой вопрос</h3>
+        
+        {% if messages %}
+            {% for message in messages %}
+                <div style="color: green; font-weight: bold; margin-bottom: 15px;">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn btn-primary" style="background-color: #007bff; color: white; border: none; padding: 10px 15px; border-radius: 4px; cursor: pointer;">
+                Отправить вопрос
+            </button>
+        </form>
+    </div>
+
+    <h2 style="margin-bottom: 20px;">Часто задаваемые вопросы</h2>
+    {% for item in faqs %}
+        <div class="faq-item" style="background: #ffffff; border-left: 4px solid #28a745; padding: 15px; margin-bottom: 20px; border-radius: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+            <h4 style="margin-top: 0; color: #333; margin-bottom: 5px;">❓ {{ item.question_text }}</h4>
+            <small style="color: #999; display: block; margin-bottom: 10px;">
+                Автор: {{ item.user.username|default:"Гость" }} | {{ item.created_at|date:"d.m.Y H:i" }}
+            </small>
+            <p style="margin-bottom: 0; color: #555; line-height: 1.6; background: #f9f9f9; padding: 10px; border-radius: 4px;">
+                <strong>Ответ фабрики:</strong> {{ item.answer_text }}
+            </p>
+        </div>
+    {% empty %}
+        <p style="color: #666;">Пока никто не задал ни одного вопроса со старта работы раздела.</p>
+    {% endfor %}
+</div>
+{% endblock %}

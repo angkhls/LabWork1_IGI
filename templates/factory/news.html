@@ -1,0 +1,37 @@
+{% extends 'factory/base.html' %}
+{% block title %}Новости{% endblock %}
+{% block content %}
+<h1>Новости</h1>
+
+<form method="get" style="margin-bottom:15px;">
+    <input type="text" name="q" value="{{ q }}" placeholder="Поиск по заголовку...">
+    <select name="sort">
+        <option value="-published_at" {% if sort == '-published_at' %}selected{% endif %}>Сначала новые</option>
+        <option value="published_at" {% if sort == 'published_at' %}selected{% endif %}>Сначала старые</option>
+        <option value="title" {% if sort == 'title' %}selected{% endif %}>По названию А-Я</option>
+        <option value="-title" {% if sort == '-title' %}selected{% endif %}>По названию Я-А</option>
+    </select>
+    <button type="submit" class="btn">Найти</button>
+    {% if user_role == 'manager' or user_role == 'director' %}
+        <a href="/news/create/" class="btn">+ Добавить</a>
+    {% endif %}
+</form>
+
+<table>
+    <tr><th>Заголовок</th><th>Кратко</th><th>Дата</th><th></th></tr>
+    {% for article in articles %}
+    <tr>
+        <td><a href="/news/{{ article.pk }}/">{{ article.title }}</a></td>
+        <td>{{ article.summary|truncatechars:80 }}</td>
+        <td>{{ article.published_at|date:"d/m/Y H:i" }}</td>
+        <td>
+            {% if user_role == 'manager' or user_role == 'director' %}
+            <a href="/news/{{ article.pk }}/edit/">Изменить</a>
+            {% endif %}
+        </td>
+    </tr>
+    {% empty %}
+    <tr><td colspan="4">Новостей нет</td></tr>
+    {% endfor %}
+</table>
+{% endblock %}

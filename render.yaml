@@ -1,0 +1,31 @@
+# Пример деплоя на Render (https://render.com)
+# Dashboard → New → Blueprint → подключить репозиторий с этим файлом
+# Или создать Web Service + PostgreSQL вручную (см. инструкцию в чате).
+
+databases:
+  - name: furniture-db
+    plan: free
+    databaseName: furniture_db
+    user: furniture_user
+
+services:
+  - type: web
+    name: furniture-factory
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.txt && python manage.py collectstatic --noinput
+    startCommand: gunicorn core.wsgi:application --bind 0.0.0.0:$PORT
+    preDeployCommand: python manage.py migrate
+    envVars:
+      - key: DJANGO_DEBUG
+        value: "False"
+      - key: DJANGO_SECRET_KEY
+        generateValue: true
+      - key: DJANGO_ALLOWED_HOSTS
+        sync: false
+      - key: CSRF_TRUSTED_ORIGINS
+        sync: false
+      - key: DATABASE_URL
+        fromDatabase:
+          name: furniture-db
+          property: connectionString

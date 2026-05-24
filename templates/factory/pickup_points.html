@@ -1,0 +1,16 @@
+{% extends 'factory/base.html' %}
+{% block title %}Пункты самовывоза{% endblock %}
+{% block content %}
+
+<h1>Пункты самовывоза</h1>
+
+{% for point in points %}
+<div style="border:1px solid #ddd; padding:15px; margin:10px 0; border-radius:6px;">
+    <h2 style="margin:0 0 8px 0;">{{ point.name }}</h2>
+    <p><b>📍 Адрес:</b> {{ point.address }}</p>
+</div>
+{% empty %}
+<p>Пункты самовывоза пока не добавлены.</p>
+{% endfor %}
+
+{% endblock %}

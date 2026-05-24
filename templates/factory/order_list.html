@@ -1,0 +1,41 @@
+{% extends 'factory/base.html' %}
+{% block title %}Заказы{% endblock %}
+{% block content %}
+<h1>{% if user_role == 'client' %}Мои заказы{% else %}Заказы фабрики{% endif %}</h1>
+
+<form method="get" style="margin-bottom:15px;">
+    <select name="status">
+        <option value="">Все статусы</option>
+        <option value="new" {% if status == 'new' %}selected{% endif %}>Новый</option>
+        <option value="in_progress" {% if status == 'in_progress' %}selected{% endif %}>В работе</option>
+        <option value="done" {% if status == 'done' %}selected{% endif %}>Выполнен</option>
+        <option value="cancelled" {% if status == 'cancelled' %}selected{% endif %}>Отменён</option>
+    </select>
+    <select name="sort">
+        <option value="-order_date" {% if sort == '-order_date' %}selected{% endif %}>Сначала новые</option>
+        <option value="order_date" {% if sort == 'order_date' %}selected{% endif %}>Сначала старые</option>
+    </select>
+    <button type="submit" class="btn">Фильтр</button>
+    {% if can_create %}<a href="/cart/" class="btn">+ Новый заказ (корзина)</a>{% endif %}
+</form>
+
+<table>
+    <tr><th>#</th><th>Дата</th><th>Статус</th><th>Промокод</th><th>Сумма</th><th>Действия</th></tr>
+    {% for row in order_rows %}
+    <tr>
+        <td>{{ row.order.pk }}</td>
+        <td>{{ row.order.order_date|date:"d/m/Y" }}</td>
+        <td>{{ row.order.get_status_display }}</td>
+        <td>{% if row.order.promo %}{{ row.order.promo.code }}{% else %}—{% endif %}</td>
+        <td>{{ row.order.total_price }} BYN</td>
+        <td>
+            <a href="/orders/{{ row.order.pk }}/">Просмотр</a>
+            {% if row.can_edit %} | <a href="/orders/{{ row.order.pk }}/edit/">Изменить</a>{% endif %}
+            {% if row.can_delete %} | <a href="/orders/{{ row.order.pk }}/delete/">Удалить</a>{% endif %}
+        </td>
+    </tr>
+    {% empty %}
+    <tr><td colspan="6">Заказов нет.</td></tr>
+    {% endfor %}
+</table>
+{% endblock %}

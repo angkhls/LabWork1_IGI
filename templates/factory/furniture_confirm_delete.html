@@ -1,0 +1,11 @@
+{% extends 'factory/base.html' %}
+{% block title %}Удалить{% endblock %}
+{% block content %}
+<h1>Удалить "{{ item.name }}"?</h1>
+<p>Это действие нельзя отменить.</p>
+<form method="post">
+    {% csrf_token %}
+    <button type="submit" class="btn">Да, удалить</button>
+    <a href="/furniture/" class="btn">Отмена</a>
+</form>
+{% endblock %}

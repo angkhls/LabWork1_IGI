@@ -1,0 +1,57 @@
+{% extends 'factory/base.html' %}
+{% block title %}Статистика{% endblock %}
+{% block content %}
+<h1>Статистика продаж</h1>
+
+<h2>График продаж (Python / Matplotlib)</h2>
+{% if chart_base64 %}
+<img src="data:image/png;base64,{{ chart_base64 }}" alt="График продаж" style="max-width:100%;border:1px solid #ddd;">
+{% endif %}
+
+<h2>Описательная статистика</h2>
+<table>
+    <tr><th>Показатель</th><th>Среднее</th><th>Медиана</th><th>Мода</th><th>N</th></tr>
+    <tr>
+        <td>Суммы выполненных заказов (BYN)</td>
+        <td>{{ order_stats.mean }}</td>
+        <td>{{ order_stats.median }}</td>
+        <td>{{ order_stats.mode }}</td>
+        <td>{{ order_stats.count }}</td>
+    </tr>
+    <tr>
+        <td>Суммы позиций в выполненных заказах (BYN)</td>
+        <td>{{ sales_line_stats.mean }}</td>
+        <td>{{ sales_line_stats.median }}</td>
+        <td>{{ sales_line_stats.mode }}</td>
+        <td>{{ sales_line_stats.count }}</td>
+    </tr>
+    <tr>
+        <td>Возраст клиентов (лет)</td>
+        <td>{{ age_stats.mean }}</td>
+        <td>{{ age_stats.median }}</td>
+        <td>{{ age_stats.mode }}</td>
+        <td>{{ age_stats.count }}</td>
+    </tr>
+</table>
+
+<h2>Самые прибыльные виды мебели</h2>
+<table>
+    <tr><th>Вид</th><th>Выручка (BYN)</th></tr>
+    {% for row in profitable_types %}
+    <tr><td>{{ row.name }}</td><td>{{ row.revenue }}</td></tr>
+    {% empty %}
+    <tr><td colspan="2">Нет данных (нужны выполненные заказы)</td></tr>
+    {% endfor %}
+</table>
+
+<h2>Популярные виды мебели (по количеству)</h2>
+<table>
+    <tr><th>Вид</th><th>Кол-во в заказах</th></tr>
+    {% for t in popular_types %}
+    <tr><td>{{ t.name }}</td><td>{{ t.count }}</td></tr>
+    {% endfor %}
+</table>
+
+<p><b>Общая выручка (выполненные заказы):</b> {{ total }} BYN</p>
+<p><b>Выполненных заказов:</b> {{ orders.count }}</p>
+{% endblock %}

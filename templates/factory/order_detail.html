@@ -1,0 +1,38 @@
+{% extends 'factory/base.html' %}
+{% block title %}Заказ #{{ order.pk }}{% endblock %}
+{% block content %}
+<h1>Заказ #{{ order.pk }}</h1>
+<p><b>Дата:</b> {{ order.order_date|date:"d/m/Y" }}</p>
+<p><b>Статус:</b> {{ order.get_status_display }}</p>
+{% if order.client %}<p><b>Клиент:</b> {{ order.client.name }}</p>{% endif %}
+{% if order.promo %}
+<p><b>Промокод:</b> {{ order.promo.code }} (−{{ order.promo.discount_percent }}%)</p>
+{% endif %}
+<p><b>Примечания:</b> {{ order.notes|default:"—" }}</p>
+
+<h3>Товары</h3>
+<table>
+    <tr><th>Изделие</th><th>Кол-во</th><th>Цена</th><th>Сумма</th></tr>
+    {% for item in items %}
+    <tr>
+        <td>{{ item.furniture.name }} ({{ item.furniture.code }})</td>
+        <td>{{ item.quantity }}</td>
+        <td>{{ item.price_per_unit }} BYN</td>
+        <td>{{ item.subtotal }} BYN</td>
+    </tr>
+    {% empty %}
+    <tr><td colspan="4">Позиций нет</td></tr>
+    {% endfor %}
+</table>
+<p><b>Сумма без скидки:</b> {{ subtotal }} BYN</p>
+{% if order.promo %}
+<p><b>Скидка:</b> −{{ discount }} BYN</p>
+{% endif %}
+<p><b>К оплате:</b> {{ total }} BYN</p>
+
+<p>
+    <a href="/orders/">К списку</a>
+    {% if can_edit %} | <a href="/orders/{{ order.pk }}/edit/">Редактировать</a>{% endif %}
+    {% if can_delete %} | <a href="/orders/{{ order.pk }}/delete/">Удалить</a>{% endif %}
+</p>
+{% endblock %}

@@ -1,0 +1,59 @@
+{% extends 'factory/base.html' %}
+{% block title %}Регистрация{% endblock %}
+
+{% block content %}
+<h2>Регистрация</h2>
+
+<form method="post" id="register-form">
+    {% csrf_token %}
+    
+    {% if form.non_field_errors %}
+        <div class="error" style="color: red;">{{ form.non_field_errors }}</div>
+    {% endif %}
+    
+    {% for field in form %}
+        <p>
+            <label for="{{ field.id_for_label }}">{{ field.label }}:</label><br>
+            {{ field }}
+            {% if field.help_text %}<br><small>{{ field.help_text }}</small>{% endif %}
+            {% if field.errors %}<br><span style="color:red;">{{ field.errors.as_text }}</span>{% endif %}
+        </p>
+    {% endfor %}
+    
+    <button type="submit" class="btn">Зарегистрироваться</button>
+</form>
+
+<script>
+(function () {
+    const form = document.getElementById('register-form');
+    const birthInput = form.querySelector('[name="birth_date"]');
+
+    function validateAge() {
+        if (!birthInput || !birthInput.value) return true;
+        const birth = new Date(birthInput.value);
+        const today = new Date();
+        let age = today.getFullYear() - birth.getFullYear();
+        const m = today.getMonth() - birth.getMonth();
+        if (m < 0 || (m === 0 && today.getDate() < birth.getDate())) age--;
+        
+        if (age < 18) {
+            birthInput.setCustomValidity('Возраст должен быть не менее 18 лет');
+            return false;
+        }
+        birthInput.setCustomValidity('');
+        return true;
+    }
+
+    if (birthInput) {
+        birthInput.addEventListener('change', validateAge);
+    }
+
+    form.addEventListener('submit', function (e) {
+        if (!validateAge() || !form.checkValidity()) {
+            e.preventDefault();
+            form.reportValidity();
+        }
+    });
+})();
+</script>
+{% endblock %}

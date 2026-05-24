@@ -1,0 +1,11 @@
+{% extends 'factory/base.html' %}
+{% block title %}Удалить новость{% endblock %}
+{% block content %}
+<h1>Удалить новость?</h1>
+<p>{{ article.title }}</p>
+<form method="post">
+    {% csrf_token %}
+    <button type="submit" class="btn">Удалить</button>
+    <a href="/news/">Отмена</a>
+</form>
+{% endblock %}
