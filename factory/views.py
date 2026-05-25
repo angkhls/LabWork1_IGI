@@ -1,13 +1,4 @@
-"""
-Представления (Function-Based Views) мебельной фабрики.
 
-Каждая функция:
-  - GET: готовит QuerySet и отдаёт render(template, context).
-  - POST: принимает форму, вызывает form.is_valid(), save(), redirect.
-
-Права доступа — модуль access.py и декораторы login_required / role_required / client_only.
-Логи — logger 'factory.views' (см. LOGGING в settings.py).
-"""
 import base64
 import io
 import logging
@@ -15,7 +6,8 @@ import logging
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
-
+import datetime
+import calendar
 from django.contrib import messages
 from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
