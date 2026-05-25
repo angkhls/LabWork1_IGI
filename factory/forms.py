@@ -6,18 +6,31 @@
 from django import forms
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
+from django.core.exceptions import ValidationError
+from django.core.validators import MinValueValidator, RegexValidator 
+from datetime import date
 
 from .models import (
     Article, City, Client, FAQQuestion, Furniture, Order, Review,
     UserProfile, phone_validator, validate_adult,
 )
 
-from django.core.exceptions import ValidationError
-from datetime import date
+
+phone_regex = RegexValidator(
+    regex=r'^\+375 \(\d{2}\) \d{3}-\d{2}-\d{2}$',
+    message='Телефон должен быть в формате: +375 (29) XXX-XX-XX'
+)
 
 class CustomRegistrationForm(forms.Form):
     username = forms.CharField(label="Имя пользователя (Логин)", max_length=150)
     birth_date = forms.DateField(label="Дата рождения", widget=forms.DateInput(attrs={'type': 'date'}))
+    # Добавляем поле телефона
+    phone = forms.CharField(
+        label="Телефон",
+        validators=[phone_regex],
+        widget=forms.TextInput(attrs={'placeholder': '+375 (29) 123-45-67'}),
+        help_text="Формат: +375 (29) XXX-XX-XX"
+    )
     password = forms.CharField(label="Пароль", widget=forms.PasswordInput())
     password_confirm = forms.CharField(label="Подтвердите пароль", widget=forms.PasswordInput())
 
@@ -79,15 +92,22 @@ class ArticleForm(forms.ModelForm):
         fields = ['title', 'summary', 'content', 'image', 'is_published']
 
 
+from django import forms
+from .models import Review
+
 class ReviewForm(forms.ModelForm):
     class Meta:
         model = Review
-        fields = ['furniture', 'rating', 'text', 'image']
+        fields = ['rating', 'text', 'image']
         widgets = {
-            'text': forms.Textarea(attrs={'rows': 4, 'required': True}),
-            'rating': forms.Select(attrs={'required': True}),
-            'furniture': forms.Select(attrs={'required': True}),
+            'rating': forms.Select(choices=[(i, f'{i}★') for i in range(1, 6)]),
+            'text': forms.Textarea(attrs={'placeholder': 'Напишите ваш отзыв...'}),
         }
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['text'].required = False
+        self.fields['image'].required = False
 
 
 class FAQQuestionForm(forms.ModelForm):

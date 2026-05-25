@@ -327,15 +327,15 @@ class GlossaryTerm(models.Model):
         return self.term
 
 
+
+
 class Review(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='Пользователь')
-    furniture = models.ForeignKey(
-        Furniture, on_delete=models.CASCADE, verbose_name='Товар', related_name='reviews',
-    )
-    rating = models.PositiveSmallIntegerField('Оценка', choices=[(i, i) for i in range(1, 6)])
-    text = models.TextField('Текст отзыва')
-    image = models.ImageField('Фото к отзыву', upload_to='reviews_photos/', null=True, blank=True)
-    created_at = models.DateTimeField('Дата', auto_now_add=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    furniture = models.ForeignKey('Furniture', on_delete=models.CASCADE)
+    rating = models.IntegerField(choices=[(i, i) for i in range(1, 6)])
+    text = models.TextField(blank=True, null=True) # Текст по желанию
+    image = models.ImageField(upload_to='reviews/', blank=True, null=True) # Фото по желанию
+    created_at = models.DateTimeField(auto_now_add=True) # Дата фиксируется сама
 
     class Meta:
         verbose_name = 'Отзыв'

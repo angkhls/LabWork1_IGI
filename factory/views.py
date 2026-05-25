@@ -23,6 +23,9 @@ from django.contrib.auth.models import User
 from django.db.models import Count, F, Q, Sum
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
+from django.shortcuts import render, get_object_or_404, redirect
+from .models import Furniture, Review
+from .forms import ReviewForm
 
 from .access import (
     can_manage_catalog, can_manage_orders, can_use_cart, can_view_all_orders,
@@ -168,10 +171,8 @@ def furniture_list(request):
     })
 
 
-def furniture_detail(request, pk):
-    item = get_object_or_404(Furniture, pk=pk)
-    return render(request, 'factory/furniture_detail.html', {'item': item})
 
+    
 
 @login_required
 def furniture_create(request):
@@ -188,6 +189,26 @@ def furniture_create(request):
         form = FurnitureForm()
     return render(request, 'factory/furniture_form.html', {'form': form, 'title': 'Добавить изделие'})
 
+def furniture_detail(request, pk):
+    furniture = get_object_or_404(Furniture, id=pk)
+    reviews = Review.objects.filter(furniture=furniture).order_by('-created_at')
+    
+    if request.method == 'POST':
+        form = ReviewForm(request.POST, request.FILES)
+        if form.is_valid():
+            review = form.save(commit=False)
+            review.user = request.user
+            review.furniture = furniture
+            review.save()
+            return redirect('furniture_detail', pk=furniture.id)
+    else:
+        form = ReviewForm()
+        
+    return render(request, 'factory/furniture_detail.html', {
+        'item': furniture,
+        'reviews': reviews,
+        'form': form,
+    })
 
 @login_required
 def furniture_edit(request, pk):
@@ -731,3 +752,9 @@ def logout_view(request):
         logout(request)
         messages.info(request, 'Вы вышли из системы.')
     return redirect('/')
+
+def get_calendar_data():
+    now = datetime.now()
+    cal = calendar.HTMLCalendar(calendar.MONDAY)
+    
+    return cal.formatmonth(now.year, now.month)

@@ -10,76 +10,76 @@
         .sidebar a:hover { text-decoration: underline; }
         .container { flex-grow: 1; padding: 20px 40px; }
         .account-box { padding-bottom: 15px; margin-bottom: 15px; border-bottom: 1px dashed #ddd; font-size: 14px; }
-        .logout-btn { background: none; border: none; color: #c0392b; cursor: pointer; text-decoration: underline; }
-        .btn { padding: 8px 16px; background: #2c3e50; color: white; text-decoration: none; border: none; cursor: pointer; }
+        .logout-btn { background: none; border: none; color: #c0392b; cursor: pointer; text-decoration: underline; font-size: 14px; padding: 0; }
         table { width: 100%; border-collapse: collapse; margin-top: 15px; }
         th, td { padding: 10px; border: 1px solid #ddd; text-align: left; }
         th { background: #f5f5f5; }
         .success { color: #155724; background: #d4edda; padding: 10px; margin-bottom: 15px; }
         .error { color: #721c24; background: #f8d7da; padding: 10px; margin-bottom: 15px; }
         pre.cal { font-family: monospace; font-size: 11px; background: #f8f9fa; padding: 6px; border: 1px solid #e9ecef; }
-        .role-hint { font-size: 12px; color: #666; }
+        .role-hint { font-size: 12px; color: #666; font-style: italic; margin: 0 0 6px 0; }
+        .menu-divider { border-top: 1px solid #eee; margin: 10px 0; }
     </style>
 </head>
 <body>
 
 <div class="sidebar">
+
     <div class="account-box">
-        {% if user.is_authenticated %}
-            <div>Пользователь: <b>{{ user.username }}</b></div>
-            {% if user_role_label %}<p class="role-hint">{{ user_role_label }}</p>{% endif %}
-            <form action="/logout/" method="post" style="display:inline;">
-                {% csrf_token %}
-                <button type="submit" class="logout-btn">Выйти</button>
-            </form>
-            {% if nav.show_admin_link %}
-                <br><a href="/admin/">Админ-панель</a>
+    {% if user.is_authenticated %}
+        <p style="margin:0 0 4px 0; font-weight:bold;">{{ user.username }}</p>
+        <p class="role-hint">
+            {% if user.is_staff %}
+                Администратор<br>
+                <a href="/admin/" style="font-size: 12px; color: blue;">Админ-панель</a>
+            {% else %}
+                Пользователь
             {% endif %}
-        {% else %}
-            <p class="role-hint">Гость (без регистрации)</p>
-            <a href="/login/">Войти</a>
-            <a href="/register/">Регистрация</a>
-        {% endif %}
-    </div>
+        </p>
+        <form method="post" action="/logout/" style="display:inline;">
+            {% csrf_token %}
+            <button class="logout-btn" type="submit">Выйти</button>
+        </form>
+    {% else %}
+        <p class="role-hint">Гость</p>
+        <a href="/login/">Войти</a>
+        <a href="/register/">Регистрация</a>
+    {% endif %}
+</div>
 
+
+    
     <div style="font-size:13px;color:#555;margin-bottom:15px;border-bottom:1px dashed #ddd;padding-bottom:15px;">
-        Курс НБ РБ: <b>1 USD = {{ usd_rate }} BYN</b><br>
-        Город: <b>{{ USER_CITY }}</b><br>
-        Таймзона: <code>{{ user_timezone }}</code><br>
-        Местное: <b>{{ current_time_local }}</b><br>
-        UTC: <b>{{ current_time_utc }}</b>
-    </div>
+    Курс USD: <b>{{ usd_rate }} BYN</b><br>
+    Город: <b>{{ USER_CITY }}</b><br>
+    Местное: <b>{{ current_time_local }}</b><br>
+    UTC: <b>{{ current_time_utc }}</b> <pre style="font-family: monospace; margin: 10px 0;">{{ text_calendar }}</pre>
+</div>
 
-    <div style="margin-bottom:15px;">
-        <b>Календарь:</b>
-        <pre class="cal">{{ text_calendar }}</pre>
-    </div>
-
-    {# --- Публичное меню (гость + все) --- #}
     <a href="/">Главная</a>
     <a href="/news/">Новости</a>
     <a href="/furniture/">Каталог изделий</a>
-    <a href="/promos/">Промокоды и купоны</a>
     <a href="/glossary/">Словарь терминов (FAQ)</a>
-    <a href="/about/">О компании</a>
-    <a href="/contacts/">Контакты</a>
-    <a href="/vacancies/">Вакансии</a>
-    <a href="/privacy/">Политика конфиденциальности</a>
     <a href="/reviews/">Отзывы</a>
+    <a href="/contacts/">Контакты</a>
 
-    {# --- Только зарегистрированный клиент --- #}
-    {% if nav.show_wholesale %}<a href="/wholesale/">Оптовые закупки</a>{% endif %}
-    {% if nav.show_cart %}<a href="/cart/">Корзина</a>{% endif %}
-    {% if nav.show_orders %}<a href="/orders/">Заказы</a>{% endif %}
+    {% if user.is_authenticated %}
+        <div class="menu-divider"></div>
+        {% if nav.show_wholesale %}<a href="/wholesale/">Оптовые закупки</a>{% endif %}
+        {% if nav.show_cart %}<a href="/cart/">Корзина</a>{% endif %}
+        {% if nav.show_orders %}<a href="/orders/">Заказы</a>{% endif %}
 
-    {# --- Менеджер / директор --- #}
-    {% if nav.show_catalog_manage %}<a href="/furniture/create/">Добавить изделие</a>{% endif %}
-    {% if nav.show_news_manage %}<a href="/news/create/">Добавить новость</a>{% endif %}
-    {% if nav.show_glossary_manage %}<a href="/glossary/create/">Добавить в словарь</a>{% endif %}
+        {% if user.is_staff or nav.show_catalog_manage %}
+            <div class="menu-divider"></div>
+            <small style="color: #999;">Управление:</small>
+            {% if nav.show_catalog_manage %}<a href="/furniture/create/">+ Изделие</a>{% endif %}
+            {% if nav.show_news_manage %}<a href="/news/create/">+ Новость</a>{% endif %}
+            {% if nav.show_glossary_manage %}<a href="/glossary/create/">+ Ответ в словарь</a>{% endif %}
+            {% if nav.show_statistics %}<a href="/statistics/">Статистика</a>{% endif %}
+            {% if nav.show_clients %}<a href="/clients/">База клиентов</a>{% endif %}
+        {% endif %}
+    {% endif %}
 
-    {# --- Только владелец (директор / superuser) --- #}
-    {% if nav.show_statistics %}<a href="/statistics/">Статистика</a>{% endif %}
-    {% if nav.show_clients %}<a href="/clients/">База клиентов</a>{% endif %}
 </div>
 
 <div class="container">
