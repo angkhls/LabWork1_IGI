@@ -11,6 +11,7 @@ matplotlib==3.10.9
 numpy==2.4.6
 packaging==26.2
 pillow==12.2.0
+psycopg2-binary==2.9.12
 pyparsing==3.3.2
 python-dateutil==2.9.0.post0
 requests==2.34.2
