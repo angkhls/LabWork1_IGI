@@ -36,6 +36,22 @@ def factory_global_context(request):
     elif role == UserProfile.ROLE_DIRECTOR:
         context['user_role_label'] = 'Директор'
 
+    # --- ИНТЕГРАЦИЯ: ОПРЕДЕЛЕНИЕ ГОРОДА ---
+    x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+    if x_forwarded_for:
+        ip = x_forwarded_for.split(',')[0]
+    else:
+        ip = request.META.get('REMOTE_ADDR', '')
+
+    if ip and ip not in ['127.0.0.1', '']:
+        try:
+            response = requests.get(f'http://ip-api.com/json/{ip}?lang=ru', timeout=1)
+            if response.status_code == 200:
+                context['USER_CITY'] = response.json().get('city', 'Минск')
+        except Exception as e:
+            logger.debug('Геолокация недоступна: %s', e)
+    # --------------------------------------
+
     # API Курс валют
     try:
         response = requests.get('https://api.nbrb.by/exrates/rates/USD?parammode=2', timeout=2, verify=False)
@@ -49,18 +65,14 @@ def factory_global_context(request):
 
     # Время и Календарь
     try:
-        # UTC время
         utc_now = datetime.now(zoneinfo.ZoneInfo('UTC'))
         context['current_time_utc'] = utc_now.strftime('%d/%m/%Y %H:%M:%S')
-        
-        # Местное время
         local_tz = zoneinfo.ZoneInfo(context['user_timezone'])
         local_now = datetime.now(local_tz)
         context['current_time_local'] = local_now.strftime('%d/%m/%Y %H:%M:%S')
     except Exception as e:
         logger.error('Ошибка времени: %s', e)
 
-    # Текстовый календарь
     cal = calendar.TextCalendar(firstweekday=0)
     now = datetime.now()
     context['text_calendar'] = cal.formatmonth(now.year, now.month)

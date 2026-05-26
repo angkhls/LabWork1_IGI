@@ -60,7 +60,7 @@
     <a href="/news/">Новости</a>
     <a href="/furniture/">Каталог изделий</a>
     <a href="/glossary/">Словарь терминов (FAQ)</a>
-    <a href="/reviews/">Отзывы</a>
+    
     <a href="/contacts/">Контакты</a>
 
     {% if user.is_authenticated %}
@@ -71,12 +71,10 @@
 
         {% if user.is_staff or nav.show_catalog_manage %}
             <div class="menu-divider"></div>
-            <small style="color: #999;">Управление:</small>
-            {% if nav.show_catalog_manage %}<a href="/furniture/create/">+ Изделие</a>{% endif %}
-            {% if nav.show_news_manage %}<a href="/news/create/">+ Новость</a>{% endif %}
-            {% if nav.show_glossary_manage %}<a href="/glossary/create/">+ Ответ в словарь</a>{% endif %}
+            
+            
             {% if nav.show_statistics %}<a href="/statistics/">Статистика</a>{% endif %}
-            {% if nav.show_clients %}<a href="/clients/">База клиентов</a>{% endif %}
+            
         {% endif %}
     {% endif %}
 
