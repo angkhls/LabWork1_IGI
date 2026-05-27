@@ -21,8 +21,9 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
+    
+    'cloudinary_storage', 
     'django.contrib.staticfiles',
-    'cloudinary_storage',  # ← добавь
     'cloudinary',          # ← добавь
     'factory',
 ]
