@@ -5,6 +5,9 @@ pip install -r requirements.txt
 python manage.py migrate --noinput
 python manage.py collectstatic --noinput
 
+# Загружаем данные из фикстуры
+python manage.py loaddata data.json
+
 # Создаём суперпользователя если его нет
 python manage.py shell -c "
 from django.contrib.auth import get_user_model
