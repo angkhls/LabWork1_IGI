@@ -36,7 +36,6 @@ def factory_global_context(request):
     elif role == UserProfile.ROLE_DIRECTOR:
         context['user_role_label'] = 'Директор'
 
-    # --- ИНТЕГРАЦИЯ: ОПРЕДЕЛЕНИЕ ГОРОДА ---
     x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
     if x_forwarded_for:
         ip = x_forwarded_for.split(',')[0]
@@ -50,7 +49,7 @@ def factory_global_context(request):
                 context['USER_CITY'] = response.json().get('city', 'Минск')
         except Exception as e:
             logger.debug('Геолокация недоступна: %s', e)
-    # --------------------------------------
+    
 
     # API Курс валют
     try:

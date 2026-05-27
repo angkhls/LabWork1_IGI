@@ -621,7 +621,7 @@ def contacts(request):
 
 
 def _build_sales_chart():
-    """График продаж по видам мебели (matplotlib → base64 PNG)."""
+    """График продаж по видам мебели )."""
     data = (
         OrderItem.objects.filter(order__status='done')
         .values('furniture__furniture_type__name')

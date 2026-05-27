@@ -3,6 +3,9 @@
 
 Словарь терминов по ТЗ = FAQ (вопрос + ответ + дата), модель FAQQuestion.
 """
+
+
+from .models import Review
 from django import forms
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
@@ -92,8 +95,6 @@ class ArticleForm(forms.ModelForm):
         fields = ['title', 'summary', 'content', 'image', 'is_published']
 
 
-from django import forms
-from .models import Review
 
 class ReviewForm(forms.ModelForm):
     class Meta:
@@ -130,7 +131,7 @@ class FAQQuestionForm(forms.ModelForm):
 
 class FAQPublishForm(forms.ModelForm):
     """
-    Форма для менеджера/директора: сразу опубликовать пару вопрос–ответ в словаре.
+    Форма для /директора: сразу опубликовать пару вопрос–ответ в словаре.
     """
 
     class Meta:

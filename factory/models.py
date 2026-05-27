@@ -66,7 +66,7 @@ class UserProfile(models.Model):
 
 class FAQQuestion(models.Model):
     """
-    Словарь терминов / FAQ (одна сущность по ТЗ лабораторной).
+    Словарь терминов / FAQ 
 
     На сайте в разделе «Словарь» показываются записи с is_answered=True:
     вопрос, ответ и created_at (дата добавления).
@@ -108,8 +108,7 @@ class City(models.Model):
 
 
 class Client(models.Model):
-    """Клиент (оптовый заказчик). One-to-One с User."""
-
+    """Клиент. One-to-One с User."""
     user = models.OneToOneField(User, on_delete=models.CASCADE, null=True, blank=True)
     code = models.CharField('Код клиента', max_length=20, unique=True)
     name = models.CharField('Название компании', max_length=200)
@@ -138,7 +137,7 @@ class Client(models.Model):
 
 
 class Employee(models.Model):
-    """Сотрудник. One-to-One с User (опционально, для менеджеров)."""
+    """Сотрудник. One-to-One с User """
 
     user = models.OneToOneField(
         User, on_delete=models.SET_NULL, null=True, blank=True, related_name='employee',

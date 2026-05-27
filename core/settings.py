@@ -9,7 +9,6 @@ DEBUG = os.environ.get('DJANGO_DEBUG', 'True') == 'True'
 
 ALLOWED_HOSTS = os.environ.get('DJANGO_ALLOWED_HOSTS', '*').split(',')
 
-# Для HTTPS на хостинге (Render и т.п.): CSRF_TRUSTED_ORIGINS=https://your-app.onrender.com
 _csrf = os.environ.get('CSRF_TRUSTED_ORIGINS', '')
 if _csrf:
     CSRF_TRUSTED_ORIGINS = [x.strip() for x in _csrf.split(',') if x.strip()]
@@ -48,7 +47,7 @@ TEMPLATES = [
         'django.template.context_processors.request',
         'django.contrib.auth.context_processors.auth',
         'django.contrib.messages.context_processors.messages',
-        'factory.context_processors.factory_global_context', # Только этот!
+        'factory.context_processors.factory_global_context',
     ],
 },
     },
