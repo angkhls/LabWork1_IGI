@@ -55,6 +55,14 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'core.wsgi.application'
 
+# Указываем, где Django искать статику локально
+STATICFILES_DIRS = [BASE_DIR / 'static']
+
+# Куда собирать все файлы перед отправкой на сервер (для Render)
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+
+# URL для доступа к статике
+STATIC_URL = '/static/'
 
 def _build_database_config():
     """
