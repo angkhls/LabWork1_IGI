@@ -1,0 +1,23 @@
+=== TASK 2 RESULTS (Variant 29) ===
+
+--- General analysis ---
+Total sentences:              8
+  Declarative   (ends with .): 6
+  Interrogative (ends with ?): 1
+  Exclamatory   (ends with !): 1
+Avg sentence length (letters): 28.38 chars
+Average word length:           5.04 chars
+Smiley count:                  2  =>  [';--[[[', ':-)))']
+
+--- Variant 29 ---
+Mixed (lowercase+digit) words: ['val9', 'var3', 'version5']
+IP '21':               INVALID
+Lowercase letter count:        222
+First word with 'v':           'Version' at position 8
+Text without 's' words:        ;--[[[
+The network consists of nodes: 172.16.254.1 handles routing.
+Version control keeps track of every change.
+variables like val9 and var3 are declared but never used.
+have noticed that  was offline!
+Is the license valid for version5 of the product?
+:-)))
